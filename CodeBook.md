@@ -19,7 +19,7 @@ From [http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Sm
 
 ## Data definitions
 From [http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones)
->>The features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ. These time domain signals (prefix 't' to denote time) were captured at a constant rate of 50 Hz. Then they were filtered using a median filter and a 3rd order low pass Butterworth filter with a corner frequency of 20 Hz to remove noise. Similarly, the acceleration signal was then separated into body and gravity acceleration signals (tBodyAcc-XYZ and tGravityAcc-XYZ) using another low pass Butterworth filter with a corner frequency of 0.3 Hz. 
+>The features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ. These time domain signals (prefix 't' to denote time) were captured at a constant rate of 50 Hz. Then they were filtered using a median filter and a 3rd order low pass Butterworth filter with a corner frequency of 20 Hz to remove noise. Similarly, the acceleration signal was then separated into body and gravity acceleration signals (tBodyAcc-XYZ and tGravityAcc-XYZ) using another low pass Butterworth filter with a corner frequency of 0.3 Hz. 
 
 >Subsequently, the body linear acceleration and angular velocity were derived in time to obtain Jerk signals (tBodyAccJerk-XYZ and tBodyGyroJerk-XYZ). Also the magnitude of these three-dimensional signals were calculated using the Euclidean norm (tBodyAccMag, tGravityAccMag, tBodyAccJerkMag, tBodyGyroMag, tBodyGyroJerkMag). 
 
@@ -29,15 +29,25 @@ From [http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Sm
 '-XYZ' is used to denote 3-axial signals in the X, Y and Z directions.__
 
 **accelerometer-gyroscope-activities.txt:** 
+For this data set we pulled only the features that calculated the mean or standard deviation of a particular variable. To make the raw data tidy, we did the following:
+1. Combined training and test sets into a single data set for features, subjects, and activites. 
+2. Pulled only the features that calculated the mean or standard deviation of a variable.
+3. Renamed all of the features using dot notation instead of camel case. Also rplaced dashes with dots and remobed an parentheses in the names. Another option was to create fully-named variables like "fft.body.acceleration.jerk.magnitude.mean". This option would make working with the data difficult, so we stuck with the truncated names as they are still clear while also being concise. 
+
+The resulting file, accelerometer-gyroscope-activities.txt contains one row for every measurement sample. Each subject and activity should have multiple rows of data in the file as measurements were recorded over time. 
+
+
 activity: Text description of the activity performed during the reading. Possible values are "walking", "walking.upstairs", "walking.downstairs", "sitting", "standing", "laying"
 subject: Integer denoting which test subject the reading is from. No text descriptions of the test subject were recorded. 
-*Jerk signals*
+**FFT signals**
+*Body accelerometer jerk signals*
 f.body.acc.jerk.mean.x
 f.body.acc.jerk.mean.y
 f.body.acc.jerk.mean.z
 f.body.acc.jerk.std.x
 f.body.acc.jerk.std.y
 f.body.acc.jerk.std.z
+*Body acceleration signals*
 f.body.acc.mag.mean
 f.body.acc.mag.std
 f.body.acc.mean.x
@@ -46,34 +56,44 @@ f.body.acc.mean.z
 f.body.acc.std.x
 f.body.acc.std.y
 f.body.acc.std.z
+*Body acceleration jerk magnitude signals *
 f.body.body.acc.jerk.mag.mean
 f.body.body.acc.jerk.mag.std
+*Body gyroscope jerk magnitude signals*
 f.body.body.gyro.jerk.mag.mean
 f.body.body.gyro.jerk.mag.std
+*Body gyroscope magnitude signals*
 f.body.body.gyro.mag.mean
 f.body.body.gyro.mag.std
+*Body gyroscope signals*
 f.body.gyro.mean.x
 f.body.gyro.mean.y
 f.body.gyro.mean.z
 f.body.gyro.std.x
 f.body.gyro.std.y
 f.body.gyro.std.z
+**Timed signals**
+*Body acceleration jerk magnitude signals*
 t.body.acc.jerk.mag.mean
 t.body.acc.jerk.mag.std
+*Body acceleration jerk signals*
 t.body.acc.jerk.mean.x
 t.body.acc.jerk.mean.y
 t.body.acc.jerk.mean.z
 t.body.acc.jerk.std.x
 t.body.acc.jerk.std.y
 t.body.acc.jerk.std.z
+*Body acceleration magnitude signals*
 t.body.acc.mag.mean
 t.body.acc.mag.std
+*Body acceleration signals*
 t.body.acc.mean.x
 t.body.acc.mean.y
 t.body.acc.mean.z
 t.body.acc.std.x
 t.body.acc.std.y
 t.body.acc.std.z
+*Body gyroscope jerk signals*
 t.body.gyro.jerk.mag.mean
 t.body.gyro.jerk.mag.std
 t.body.gyro.jerk.mean.x
@@ -82,16 +102,20 @@ t.body.gyro.jerk.mean.z
 t.body.gyro.jerk.std.x
 t.body.gyro.jerk.std.y
 t.body.gyro.jerk.std.z
+*Body gyroscope magnitude signals*
 t.body.gyro.mag.mean
 t.body.gyro.mag.std
+*Body gyroscope signals*
 t.body.gyro.mean.x
 t.body.gyro.mean.y
 t.body.gyro.mean.z
 t.body.gyro.std.x
 t.body.gyro.std.y
 t.body.gyro.std.z
+*Gravity acceleration magnitude signals*
 t.gravity.acc.mag.mean
 t.gravity.acc.mag.std
+*Gravity acceleration signals*
 t.gravity.acc.mean.x
 t.gravity.acc.mean.y
 t.gravity.acc.mean.z
@@ -99,3 +123,10 @@ t.gravity.acc.std.x
 t.gravity.acc.std.y
 t.gravity.acc.std.z
 
+##subject-activity-means.txt
+This data set is derived from the data in accelerometer-gyroscope-activities.txt. For each subject/activity combination in the data, we created a single row with the mean of each variable. To make the raw data tidy, we did the following:
+1. Melted the data.frame using activity and test.subject as the ID. This gave us a four-column data.frame
+2. Summarized the data using dcast() again using activity and test.subject as the id. Each variable was then summarized using the mean of all records meeting each activity/test.subject combination. 
+3. Variable names were modified by adding ".mean" at the end. This means we have variables named "*.mean.mean". This should make it very clear that each is reporting the mean of a sumarrized variable.
+
+Each variable in accelerometer-gyroscope-activities.txt should have a corresponding *.mean variable in subject-activity-means.txt
