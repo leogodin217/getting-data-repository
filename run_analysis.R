@@ -1,3 +1,14 @@
+# run_analysis.R 
+# Reads accelerometer and gyroscope data that has already been stored in files
+# Produces two tidy datasets. 
+# 1) accelerometer-gyroscope-activities.txt: Activity-labeled mean and std
+# measurements 
+# 2) subject-activity-means.txt: Summarized Activity and subject labeled mean
+# of all measurements in accelerometer-gyroscope-activities.txt
+#
+# Requires reshape2
+
+
 library(reshape2)
 # Get activity labels to use for classifying data in y_train.txt
 # Using a factor since the activities are labeled 1-6 in teh data
