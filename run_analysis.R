@@ -1,4 +1,4 @@
-
+library(plyr)
 
 # Get activity labels to use for classifying data in y_train.txt
 # Using a factor since the activities are labeled 1-6 in teh data
@@ -63,5 +63,19 @@ write.table(combined.data, file="accelerometer-gyroscope-activities.txt",
             row.names=FALSE)
 
 
-# Now let's get some data on users and activity. We want the average of each
-# variable for each subject(user) and activity
+# Now let's summarize the data based on the subject and activity showing the mean for each variable
+# First we melt it to create a tall, skinny table
+data.melt = melt(combined.data, id=c("test.subject", "activity"))
+# Then summarize
+data.summarized = dcast(data.melt, test.subject + activity ~ variable, mean)
+
+# Now let's be explicit by adding .mean to each variable name
+summarized.names = (names(data.summarized))
+summarized.names[3:68] = lapply(summarized.names[3:68], function(x) paste(x, ".mean", sep=""))
+names(data.summarized) = summarized.names
+# Write our nice, tidy dataset to a file
+write.table(data.summarized, file="subject-activity-means.txt",
+                             col.names=TRUE,
+                             row.names=FALSE)
+
+
