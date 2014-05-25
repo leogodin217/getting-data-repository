@@ -1,5 +1,4 @@
-library(plyr)
-
+library(reshape2)
 # Get activity labels to use for classifying data in y_train.txt
 # Using a factor since the activities are labeled 1-6 in teh data
 activity.data = read.table("data/activity_labels.txt", stringsAsFactors=FALSE)
